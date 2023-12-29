@@ -22,11 +22,24 @@ classes = {
         "Review": Review
         }
 
+cmds = ['all', 'create', 'update', 'show', 'destroy']
+
 
 class HBNBCommand(cmd.Cmd):
     """A classs defination for HBNBCommand"""
 
     prompt = "(hbnb) "
+
+    def precmd(self, line):
+        """runs before any command"""
+
+        if "." in line and "(" in line and ")" in line:
+            cls = line.split(".")
+            cnd = cls[1].split("(")
+            _id = cnd[1].split(")")
+            if cls[0] in classes and cnd[0] in cmds:
+                line = cnd[0] + ' ' + cls[0] + ' ' + _id[0]
+        return line
 
     def do_quit(self, line):
         """A quit command to exit the program"""

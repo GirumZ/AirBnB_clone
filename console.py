@@ -22,7 +22,7 @@ classes = {
         "Review": Review
         }
 
-cmds = ['all', 'create', 'update', 'show', 'destroy']
+cmds = ['all', 'create', 'update', 'show', 'destroy', 'count']
 
 
 class HBNBCommand(cmd.Cmd):
@@ -146,6 +146,17 @@ class HBNBCommand(cmd.Cmd):
             command[3] = eval(command[3])
             setattr(instance, command[2], command[3])
             instance.save()
+
+    def do_count(self, line):
+        """counts the number of instances of a given class"""
+
+        all_obj = storage.all()
+        count = 0
+        for k, v in all_obj.items():
+            cls = k.split(".")
+            if cls[0] == line:
+                count += 1
+        print(count)
 
 
 if __name__ == '__main__':

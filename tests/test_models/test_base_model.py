@@ -46,6 +46,15 @@ class TestBaseModelClass(unittest.TestCase):
         # tests the string representation of a BaseModel object
         self.assertEqual(self.model_1.__str__(), needed_output)
 
+    def test_save(self):
+        """ Tests if the save method updates the updated_time attribute"""
+
+        time_before = self.model_1.updated_at
+        self.model_1.save()
+        time_after = self.model_1.updated_at
+
+        self.assertNotEqual(time_before, time_after)
+
     def test_to_dict(self):
         """ Tests the dictionary representation of an object"""
 

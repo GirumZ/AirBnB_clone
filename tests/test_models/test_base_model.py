@@ -36,7 +36,7 @@ class TestBaseModelClass(unittest.TestCase):
 
     def test___str__(self):
         """ Tests the string representation of a BaseModel object"""
-        
+
         m_id = self.model_1.id
         m_name = self.model_1.__class__.__name__
         m_dict = self.model_1.__dict__

@@ -7,12 +7,22 @@ from datetime import datetime
 class BaseModel():
     """ Defination of the BaseModel class"""
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """ constructor method for the BaseModel class"""
 
-        self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        # If a dictionary is given
+        expected_format = "%Y-%m-%dT%H:%M:%S.%f"
+        if (kwargs):
+            for key, value in kwargs.items():
+                if key == 'created_at' or key == 'updated_at':
+                    value = datetime.strptime(kwargs[key], expected_format)
+                if key != '__class__':
+                    setattr(self, key, value)
+        else:
+            # If no dictionary is given
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def __str__(self):
         """ formats the string representation of a class instance
@@ -28,7 +38,7 @@ class BaseModel():
         """ Updates the attribute updated_at to the current time
         """
 
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now()
 
     def to_dict(self):
         """ Returns a dictionary containing all keys/values of __dict__
@@ -38,7 +48,7 @@ class BaseModel():
                 with __class__.__name__ included
                 """
 
-        dictinary = self.__dict__
+        dictinary = self.__dict__.copy()
         # to change created_at and updated_at to strings
         dictinary['created_at'] = self.created_at.isoformat()
         dictinary['updated_at'] = self.updated_at.isoformat()

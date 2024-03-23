@@ -29,7 +29,7 @@ class BaseModel():
 
         self.updated_at = datetime.now()
 
-    def dict(self):
+    def to_dict(self):
         """ Returns a dictionary containing all keys/values of __dict__
 
             Returns:

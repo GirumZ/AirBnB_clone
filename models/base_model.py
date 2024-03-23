@@ -25,7 +25,8 @@ class BaseModel():
         return string
 
     def save(self):
-        """ Updates the attribute updated_at to the current time """
+        """ Updates the attribute updated_at to the current time
+        """
 
         self.updated_at = datetime.now()
 

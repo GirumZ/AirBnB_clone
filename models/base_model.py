@@ -28,7 +28,7 @@ class BaseModel():
         """ Updates the attribute updated_at to the current time
         """
 
-        self.updated_at = datetime.now()
+        self.updated_at = datetime.utcnow()
 
     def to_dict(self):
         """ Returns a dictionary containing all keys/values of __dict__

@@ -13,6 +13,21 @@ class TestBaseModelClass(unittest.TestCase):
 
         self.model_1 = BaseModel()
         self.model_2 = BaseModel()
+        dict_source = self.model_2.to_dict()
+        self.model_3 = BaseModel(**dict_source)
+
+    def test___init__(self):
+        """ Tests the constructor method of the BaseModel class"""
+
+        # tests if the BaseModel instances are created
+        self.assertIsInstance(self.model_1, BaseModel)
+        self.assertIsInstance(self.model_2, BaseModel)
+        self.assertIsInstance(self.model_3, BaseModel)
+
+        # tests if the BaseModel instances are created using kwargs
+        self.assertEqual(self.model_2.id, self.model_3.id)
+        self.assertEqual(self.model_2.created_at, self.model_3.created_at)
+        self.assertEqual(self.model_2.updated_at, self.model_3.updated_at)
 
     def test_id(self):
         """ Tests the id attribute of the BaseModel class"""

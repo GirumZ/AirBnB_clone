@@ -6,6 +6,7 @@ from models import storage
 import unittest
 import os
 import json
+import datetime
 
 
 class TestFileStorageClass(unittest.TestCase):
@@ -17,6 +18,17 @@ class TestFileStorageClass(unittest.TestCase):
         self.model_1 = BaseModel()
         self.model_2 = BaseModel()
         self.model_3 = BaseModel()
+
+    def test_BaseModel_save(self):
+        """ Tests the BaseModel save method"""
+
+        self.model_1.save()
+
+        key = self.model_1.__class__.__name__ + "." + self.model_1.id
+        self.assertEqual(storage._FileStorage__objects[key], self.model_1)
+        self.assertIsInstance(self.model_1.id, str)
+        self.assertIsInstance(self.model_1.created_at, datetime.datetime)
+        self.assertIsInstance(self.model_1.updated_at, datetime.datetime)
 
     def test___file_path(self):
         """ Tests the __file_path attribute"""

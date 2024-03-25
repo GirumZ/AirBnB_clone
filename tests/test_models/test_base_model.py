@@ -2,6 +2,7 @@
 """ tests for the BaseModel class attributes and methods"""
 
 import unittest
+import datetime
 from models.base_model import BaseModel
 from models import storage
 
@@ -73,6 +74,9 @@ class TestBaseModelClass(unittest.TestCase):
 
         key = self.model_1.__class__.__name__ + "." + self.model_1.id
         self.assertEqual(storage._FileStorage__objects[key], self.model_1)
+        self.assertIsInstance(self.model_1.id, str)
+        self.assertIsInstance(self.model_1.created_at, datetime.datetime)
+        self.assertIsInstance(self.model_1.updated_at, datetime.datetime)
 
     def test_to_dict(self):
         """ Tests the dictionary representation of an object"""

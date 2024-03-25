@@ -3,6 +3,7 @@
 
 import unittest
 from models.base_model import BaseModel
+from models import storage
 
 
 class TestBaseModelClass(unittest.TestCase):
@@ -69,6 +70,9 @@ class TestBaseModelClass(unittest.TestCase):
         time_after = self.model_1.updated_at
 
         self.assertNotEqual(time_before, time_after)
+
+        key = self.model_1.__class__.__name__ + "." + self.model_1.id
+        self.assertEqual(storage._FileStorage__objects[key], self.model_1)
 
     def test_to_dict(self):
         """ Tests the dictionary representation of an object"""

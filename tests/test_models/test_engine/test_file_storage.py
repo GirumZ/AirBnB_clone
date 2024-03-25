@@ -57,23 +57,40 @@ class TestFileStorageClass(unittest.TestCase):
         self.assertEqual(storage._FileStorage__objects[key], self.model_1)
 
     def test_save(self):
-        """ Tests the save method of the FileStorage class"""
+        """ Tests the method save"""
+        n_dict = {
+                'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
+                'created_at': '2017-09-28T21:03:54.052298',
+                '__class__': 'BaseModel',
+                'updated_at': '2017-09-28T21:03:54.052302'
+        }
 
+        k = "BaseModel.56d43177-cc5f-4d6c-a0c1-e167f8c27337"
+        saved_as = {k: n_dict}
+        instance = BaseModel(**n_dict)
+        storage.new(instance)
         storage.save()
-        self.assertTrue(os.path.exists(storage._FileStorage__file_path))
-        self.assertRegex(storage._FileStorage__file_path, r'\.json$')
+        with open("test.json", "r") as f:
+            got_dict = json.load(f)
+            self.assertEqual(got_dict, saved_as)
 
     def test_reload(self):
-        """ Tests the reload method of the FileStorage class"""
+        """ Tests the method reload"""
+        n_dict = {
+                'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
+                'created_at': '2017-09-28T21:03:54.052298',
+                '__class__': 'BaseModel',
+                'updated_at': '2017-09-28T21:03:54.052302'
+        }
 
-        key = self.model_2.__class__.__name__ + "." + self.model_2.id
-        new_dict = {key: self.model_2.to_dict()}
-
-        # manually creating the file.json file with model_2's data
-        with open(storage._FileStorage__file_path, "w") as f:
-            json.dump(new_dict, f)
+        k = "BaseModel.56d43177-cc5f-4d6c-a0c1-e167f8c27337"
+        instance = BaseModel(**n_dict)
+        storage.new(instance)
+        storage.save()
         storage.reload()
-        self.assertIn(key, storage._FileStorage__objects)
+        self.assertEqual(len(self.storage.all().keys()), 1)
+        self.assertIn(k, self.storage.all())
+        self.assertEqual(self.storage.all()[k].to_dict(), n_dict)
 
 
 if __name__ == '__main__':

@@ -74,3 +74,7 @@ class TestFileStorageClass(unittest.TestCase):
             json.dump(new_dict, f)
         storage.reload()
         self.assertIn(key, storage._FileStorage__objects)
+
+
+if __name__ == '__main__':
+    unittest.main()

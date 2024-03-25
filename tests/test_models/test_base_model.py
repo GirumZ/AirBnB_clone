@@ -93,3 +93,7 @@ class TestBaseModelClass(unittest.TestCase):
         # tests if the created_at and updated_at values are strings
         self.assertIsInstance(dictionary['created_at'], str)
         self.assertIsInstance(dictionary['updated_at'], str)
+
+
+if __name__ == '__main__':
+    unittest.main()

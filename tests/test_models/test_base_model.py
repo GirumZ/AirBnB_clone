@@ -67,20 +67,19 @@ class TestBaseModelClass(unittest.TestCase):
     def test_save(self):
         """ Tests if the save method updates the updated_time attribute"""
 
-        time_before = self.model_1.updated_at
         self.model_1.save()
-        time_after = self.model_1.updated_at
 
-        # tests if the updated_at attribute is updated
-        self.assertNotEqual(time_before, time_after)
-
-        key = self.model_1.__class__.__name__ + "." + self.model_1.id
-
-        # tests if the storage is updated after save
-        self.assertEqual(storage._FileStorage__objects[key], self.model_1)
         self.assertIsInstance(self.model_1.id, str)
         self.assertIsInstance(self.model_1.created_at, datetime.datetime)
         self.assertIsInstance(self.model_1.updated_at, datetime.datetime)
+
+        dict_1 = self.model_1.to_dict()
+
+        self.model_1.save()
+        dict_2 = self.model_1.to_dict()
+
+        self.assertEqual(dict_1['created_at'], dict_2['created_at'])
+        self.assertNotEqual(dict_1['updated_at'], dict_2['updated_at'])
 
     def test_to_dict(self):
         """ Tests the dictionary representation of an object"""

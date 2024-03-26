@@ -1,88 +1,100 @@
 #!/usr/bin/python3
+""" tests for the BaseModel class attributes and methods"""
 
 import unittest
-from models.base_model import BaseModel
 import datetime
+from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
+from models import storage
 
 
 class TestBaseModelClass(unittest.TestCase):
-    """ Tests the BaseModel class"""
+    """ Class for testing the BaseModel class"""
 
-    def test_init_(self):
-        """ Tests the constructer constructs form kwargs"""
-        b = BaseModel()
-        saved_as = b.to_dict()
-        c = BaseModel(**saved_as)
-        self.assertEqual(b.id, c.id)
+    def setUp(self):
+        """ sets up the test environment"""
 
-    def test_id_type(self):
-        """ Tests the type of id attribute"""
-        b1 = BaseModel()
-        self.assertIsInstance(b1.id, str)
+        self.model_1 = BaseModel()
+        self.model_2 = BaseModel()
+        dict_source = self.model_2.to_dict()
+        self.model_3 = BaseModel(**dict_source)
 
-    def test_id_uniqeness(self):
-        """ Tests if id is unique for every object"""
-        id_list = []
-        for i in range(2000):
-            b2 = BaseModel()
-            self.assertNotIn(b2.id, id_list)
-            id_list.append(b2.id)
+    def test___init__(self):
+        """ Tests the constructor method of the BaseModel class"""
 
-    def test_created_at_type(self):
-        """ Tests the type of created_at is datetime"""
-        b3 = BaseModel()
-        self.assertIsInstance(b3.created_at, datetime.datetime)
+        # tests if the BaseModel instances are created
+        self.assertIsInstance(self.model_1, BaseModel)
+        self.assertIsInstance(self.model_2, BaseModel)
+        self.assertIsInstance(self.model_3, BaseModel)
 
-    def test_updated_at_type(self):
-        """ Test the type of updated_at is datetime"""
-        b4 = BaseModel()
-        self.assertIsInstance(b4.updated_at, datetime.datetime)
+        # tests if the BaseModel instances are created using kwargs
+        self.assertEqual(self.model_2.id, self.model_3.id)
+        self.assertEqual(self.model_2.created_at, self.model_3.created_at)
+        self.assertEqual(self.model_2.updated_at, self.model_3.updated_at)
 
-    def test_created_and_updated_at_difference(self):
-        """ Tests the time two instances are created is different"""
-        b5 = BaseModel()
-        b6 = BaseModel()
+    def test_id(self):
+        """ Tests the id attribute of the BaseModel class"""
 
-        self.assertNotEqual(b5.created_at, b6.created_at)
+        # tests the uniqueness of id
+        self.assertNotEqual(self.model_1.id, self.model_2.id)
+        # tests if id attribute is a string
+        self.assertIsInstance(self.model_1.id, str)
 
-    def test_str_(self):
-        """ Tests the representation of an object"""
-        b7 = BaseModel()
-        to_be_printed = "[{}] ({}) {}".format(b7.__class__.__name__,
-                                              b7.id, b7.__dict__)
-        self.assertEqual(str(b7), to_be_printed)
+    def test_created_at(self):
+        """ Tests the created_it attribute of the BaseModel class"""
 
-    def test_to_dict_type(self):
-        """Tests to_dict returns a dictinary"""
-        b9 = BaseModel()
-        saved_as = b9.to_dict()
-        self.assertIsInstance(saved_as, dict)
+        # tests the uniqueness of the created_at time of an object
+        self.assertNotEqual(self.model_1.created_at, self.model_2.created_at)
 
-    def test_to_dict_content(self):
-        """ Tests the content of dictinary from to_dict"""
-        b10 = BaseModel()
-        saved_as = b10.to_dict()
+    def test_updated_at(self):
+        """ Tests the updated_at attribute of the BaseModel class"""
 
-        self.assertIn("__class__", saved_as)
-        self.assertIn("id", saved_as)
-        self.assertIn("created_at", saved_as)
-        self.assertIn("updated_at", saved_as)
+        # tests the uniqueness of the created_at time of an object
+        self.assertNotEqual(self.model_1.updated_at, self.model_2.updated_at)
 
-    def test_to_dict_type(self):
-        """ Tests the type of created_at and updated_at is str"""
-        b11 = BaseModel()
-        saved_as = b11.to_dict()
-        for key, value in saved_as.items():
-            if key == "created_at" or key == "updated at":
-                self.assertIsInstance(value, str)
+    def test___str__(self):
+        """ Tests the string representation of a BaseModel object"""
 
-    def test_to_dict_new_attr(self):
-        """ Tests if new attributes are added to the dictionary returned"""
-        b12 = BaseModel()
-        b12.purpose = "test"
-        saved_as = b12.to_dict()
+        m_id = self.model_1.id
+        m_name = self.model_1.__class__.__name__
+        m_dict = self.model_1.__dict__
 
-        self.assertIn("purpose", saved_as)
+        needed_output = f"[{m_name}] ({m_id}) {m_dict}"
+
+        # tests the string representation of a BaseModel object
+        self.assertEqual(self.model_1.__str__(), needed_output)
+
+    def test_save(self):
+        """ Tests if the save method updates the updated_time attribute"""
+
+        self.model_1.save()
+
+        self.assertIsInstance(self.model_1.id, str)
+        self.assertIsInstance(self.model_1.created_at, datetime.datetime)
+        self.assertIsInstance(self.model_1.updated_at, datetime.datetime)
+
+        dict_1 = self.model_1.to_dict()
+
+        self.model_1.save()
+        dict_2 = self.model_1.to_dict()
+
+        self.assertEqual(dict_1['created_at'], dict_2['created_at'])
+        self.assertNotEqual(dict_1['updated_at'], dict_2['updated_at'])
+
+    def test_to_dict(self):
+        """ Tests the dictionary representation of an object"""
+
+        dictionary = self.model_1.to_dict()
+
+        # tests if the specific keys are present in the dictionary
+        self.assertIn('id', dictionary)
+        self.assertIn('created_at', dictionary)
+        self.assertIn('updated_at', dictionary)
+        self.assertIn('__class__', dictionary)
+
+        # tests if the created_at and updated_at values are strings
+        self.assertIsInstance(dictionary['created_at'], str)
+        self.assertIsInstance(dictionary['updated_at'], str)
 
 
 if __name__ == '__main__':

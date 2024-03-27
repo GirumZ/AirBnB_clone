@@ -76,5 +76,17 @@ class TestFileStorageClass(unittest.TestCase):
         self.assertIsInstance(file_content, dict)
         self.assertEqual(file_content[key], storage._FileStorage__objects[key].to_dict())
 
+    def test_reload(self):
+        """ Tests the reload method of the FileStorage class"""
+
+        self.model_3.test = "test passed"
+        self.model_3.save()
+        storage.reload()
+        key = self.model_3.__class__.__name__ + "." + self.model_3.id
+        string = storage._FileStorage__objects[key].to_dict()["test"]
+
+        self.assertEqual(string, 'test passed')
+
+
 if __name__ == '__main__':
     unittest.main()

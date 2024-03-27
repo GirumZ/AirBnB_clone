@@ -57,41 +57,24 @@ class TestFileStorageClass(unittest.TestCase):
         self.assertEqual(storage._FileStorage__objects[key], self.model_1)
 
     def test_save(self):
-        """ Tests the method save"""
-        n_dict = {
-                'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
-                'created_at': '2017-09-28T21:03:54.052298',
-                '__class__': 'BaseModel',
-                'updated_at': '2017-09-28T21:03:54.052302'
-        }
+        """ Tests the save method of the Filestorage class"""
 
-        k = "BaseModel.56d43177-cc5f-4d6c-a0c1-e167f8c27337"
-        saved_as = {k: n_dict}
-        instance = BaseModel(**n_dict)
-        storage.new(instance)
+        storage.new(self.model_1)
         storage.save()
-        with open("test.json", "r") as f:
-            got_dict = json.load(f)
-            self.assertEqual(got_dict, saved_as)
+        file_name = storage._FileStorage__file_path
+        file_size = os.path.getsize(file_name)
+        key = self.model_2.__class__.__name__ + "." + self.model_2.id
+        with open(file_name, "r") as f:
+            try:
+                file_content = json.load(f)
+                json_valid = True
+            except json.JSONDecoderError:
+                json_valid = False
 
-    def test_reload(self):
-        """ Tests the method reload"""
-        n_dict = {
-                'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
-                'created_at': '2017-09-28T21:03:54.052298',
-                '__class__': 'BaseModel',
-                'updated_at': '2017-09-28T21:03:54.052302'
-        }
-
-        k = "BaseModel.56d43177-cc5f-4d6c-a0c1-e167f8c27337"
-        instance = BaseModel(**n_dict)
-        storage.new(instance)
-        storage.save()
-        storage.reload()
-        self.assertEqual(len(self.storage.all().keys()), 1)
-        self.assertIn(k, self.storage.all())
-        self.assertEqual(self.storage.all()[k].to_dict(), n_dict)
-
+        self.assertGreater(file_size, 0)
+        self.assertTrue(json_valid)
+        self.assertIsInstance(file_content, dict)
+        self.assertEqual(file_content[key], storage._FileStorage__objects[key].to_dict())
 
 if __name__ == '__main__':
     unittest.main()

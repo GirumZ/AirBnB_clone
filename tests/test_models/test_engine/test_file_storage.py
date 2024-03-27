@@ -81,7 +81,7 @@ class TestFileStorageClass(unittest.TestCase):
 
         self.model_3.test = "test passed"
         file_name = storage._FileStorage__file_path
-        self.model_3.save()
+        storage.save()
         storage.reload()
         key = self.model_3.__class__.__name__ + "." + self.model_3.id
         string = storage._FileStorage__objects[key].to_dict()["test"]

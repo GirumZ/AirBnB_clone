@@ -4,10 +4,22 @@
 import cmd
 from models.base_model import BaseModel
 from models import storage
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.state import State
+from models.review import Review
+from models.user import User
 
 
 classes = {
-        "BaseModel": BaseModel
+        "BaseModel": BaseModel,
+        "User": User,
+        "City": City,
+        "State": State,
+        "Amenity": Amenity,
+        "Place": Place,
+        "Review": Review
         }
 
 cmds = ['all', 'create', 'update', 'show', 'destroy', 'count']
@@ -30,12 +42,12 @@ class HBNBCommand(cmd.Cmd):
         return line
 
     def do_quit(self, line):
-        """To quit the program"""
+        """A quit command to exit the program"""
 
         return True
 
     def do_EOF(self, line):
-        """To exit the program"""
+        """EOF will also exit the program"""
 
         return True
 
@@ -43,7 +55,7 @@ class HBNBCommand(cmd.Cmd):
         """ help command"""
 
     def emptyline(self):
-        """ handles the case where empty line is enterd as a command"""
+        """ This does nothing"""
         pass
 
     def do_create(self, line):

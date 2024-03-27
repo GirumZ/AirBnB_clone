@@ -77,20 +77,22 @@ class TestFileStorageClass(unittest.TestCase):
         self.assertEqual(file_content[key], storage._FileStorage__objects[key].to_dict())
 
     def test_reload(self):
-        """ Tests the reload method of the FileStorage class"""
+        """ Tests the method reload"""
+        n_dict = {
+                'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
+                'created_at': '2017-09-28T21:03:54.052298',
+                '__class__': 'BaseModel',
+                'updated_at': '2017-09-28T21:03:54.052302'
+        }
 
-        self.model_3.test = "test passed"
-        file_name = storage._FileStorage__file_path
+        k = "BaseModel.56d43177-cc5f-4d6c-a0c1-e167f8c27337"
+        instance = BaseModel(**n_dict)
+        storage.new(instance)
         storage.save()
         storage.reload()
-        key = self.model_3.__class__.__name__ + "." + self.model_3.id
-        string = storage._FileStorage__objects[key].to_dict()["test"]
-        with open(file_name, "r") as f:
-            data = json.load(f)
-
-        self.assertIn(key, data)
-        self.assertEqual(string, 'test passed')
-        
+        self.assertGreater(len(storage.all().keys()), 0)
+        self.assertIn(k, storage.all())
+        self.assertEqual(storage.all()[k].to_dict(), n_dict)
 
 
 if __name__ == '__main__':

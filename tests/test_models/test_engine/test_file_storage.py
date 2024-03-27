@@ -74,7 +74,8 @@ class TestFileStorageClass(unittest.TestCase):
         self.assertGreater(file_size, 0)
         self.assertTrue(json_valid)
         self.assertIsInstance(file_content, dict)
-        self.assertEqual(file_content[key], storage._FileStorage__objects[key].to_dict())
+        dictionary = storage._FileStorage__objects[key].to_dict()
+        self.assertEqual(file_content[key], dictionary)
 
     def test_reload(self):
         """ Tests the method reload"""

@@ -4,22 +4,10 @@
 import cmd
 from models.base_model import BaseModel
 from models import storage
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.state import State
-from models.review import Review
-from models.user import User
 
 
 classes = {
-        "BaseModel": BaseModel,
-        "User": User,
-        "City": City,
-        "State": State,
-        "Amenity": Amenity,
-        "Place": Place,
-        "Review": Review
+        "BaseModel": BaseModel
         }
 
 cmds = ['all', 'create', 'update', 'show', 'destroy', 'count']
